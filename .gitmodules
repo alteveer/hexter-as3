@@ -1,0 +1,3 @@
+[submodule "lib/alteveer-flixel"]
+	path = lib/alteveer-flixel
+	url = https://github.com/alteveer/flixel.git
