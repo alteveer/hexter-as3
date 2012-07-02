@@ -8,9 +8,6 @@ package
 	 */
 	public class HexMap extends FlxGroup
 	{
-		[Embed(source="../assets/hex_tile.png")]
-		private var HexTile:Class
-
 		public var tile_width:Number = 48
 		public var tile_height:Number = 32
 		public var graphic_width:Number = 64
@@ -19,6 +16,7 @@ package
 		public var acho:Number = 16 // "a.lternate c.olumn h.eight o.ffset"
 		
 		public var tiles:Array = []
+		public var starting_tile:HexTile
 		
 		public var map_width:Number
 		public var map_height:Number
@@ -30,22 +28,23 @@ package
 			map_width = _mw
 			map_height = _mh
 			
-			var tile:FlxSprite
+			var tile:HexTile
 			var x:Number, y:Number
 			for (x = 0; x < map_width; x++) {
 				tiles[x] = []
 				for (y = 0; y < map_height; y++) {
-					tile = new FlxSprite(
+					tile = new HexTile(
 						x * tile_width, 
-						y * tile_height + (acho * (x%2)),
-						HexTile
+						y * tile_height + (acho * (x%2))						
 					)
 					tiles[x][y] = tile
 					//tile.loadGraphic(hex_tiles
 					add(tile)
 				}
 			}
-	
+			
+			starting_tile = tiles[_mw / 2][_mh / 2]
+			
 		}
 
 		

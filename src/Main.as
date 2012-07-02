@@ -29,9 +29,12 @@ package
 		[Embed(source="../assets/fonts/Bangalor.ttf", fontFamily="script", embedAsCFF="false")] 	
 		public static var FontScriptTitle:String;
 		
+		public static const WIDTH:Number = 	640;
+		public static const HEIGHT:Number = 400;
+		
 		public function Main():void 
 		{
-			super(640, 400, WorldMapState, 2)
+			super(WIDTH, HEIGHT, WorldMapState, 2)
 		}
 		
 	}
