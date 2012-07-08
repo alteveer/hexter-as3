@@ -1,5 +1,6 @@
 package  
 {
+	import org.flixel.FlxBasic;
 	import org.flixel.FlxCamera;
 	import org.flixel.FlxObject;
 	import org.flixel.FlxSprite;
@@ -13,6 +14,24 @@ package
 	 * ...
 	 * @author robots
 	 */
+	
+		/*  what is going on here?
+		 * 
+		 *       |--------------| tile_width 
+		 *                          --- 
+		 *                           | top_left_height_offset
+		 *                           |
+		 *  ---       ----------    ---   ---
+		 *   |      /            \         |  alternate_column_height_offset
+		 *   |     /   tile       \       ---
+		 *   |     \  (x:0, y:0)  /  -----------
+		 *   |      \            / /             \
+		 *  ---       ----------  /   tile        \
+		 *    tile_height         \  (x:1, y:1)   /
+		 *                         \             /
+		 *                           -----------
+		 */
+	 
 	public class WorldMapState extends FlxState 
 	{
 		protected var hex_map:HexMap
@@ -27,17 +46,20 @@ package
 		
 		public function WorldMapState() 
 		{
+			
+		}
+		override public function create():void 
+		{
+			//super.create();
 			FlxG.flash(0xff000000, Main.FADE_IN_TIME)
 			title = new FlxText(TEXT_MARGIN, TEXT_MARGIN, FlxG.width, "test")
 			title.size = 24
 			title.font = "Title"
+			title.scrollFactor = new FlxPoint(0,0)
 			//title.scrollFactor = new FlxPoint()
 
-			camera = new FlxCamera(0, 0, Main.WIDTH, Main.HEIGHT);
-			FlxG.addCamera(camera)
-			camera.focusOn(new FlxPoint(600, 1000))
-			
-			hex_map = new HexMap(20, 20)
+			FlxG.camera.focusOn(new FlxPoint(25, 25))
+			hex_map = new HexMap(3, 5)
 			
 			player = new FlxSprite()
 			player.loadGraphic(Character01, true, true, 16, 32)
@@ -49,16 +71,18 @@ package
 			var _st:FlxPoint = hex_map.starting_tile.getMidpoint()
 			trace(_st.x, _st.y)
 			player.x = _st.x - (player.width/2)
-			player.y = _st.y - (player.height/2) + 4
-			FlxG.mouse.show()
+			player.y = _st.y - (player.height/2)
+
 			add(hex_map)
 			add(title)
 			add(player)
-		
+			trace(FlxG.camera)
+			
 		}
+		
 		override public function update():void {
 			super.update();
-			
+		   	
 			
 		}
 		

@@ -43,7 +43,7 @@ package
 				}
 			}
 			
-			starting_tile = tiles[_mw / 2][_mh / 2]
+			starting_tile = tiles[Math.round(_mw / 2)][Math.round(_mh / 2)]
 			
 		}
 
