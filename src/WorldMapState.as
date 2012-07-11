@@ -58,8 +58,7 @@ package
 			title.scrollFactor = new FlxPoint(0,0)
 			//title.scrollFactor = new FlxPoint()
 
-			FlxG.camera.focusOn(new FlxPoint(25, 25))
-			hex_map = new HexMap(3, 5)
+			hex_map = new HexMap(13, 15)
 			
 			player = new FlxSprite()
 			player.loadGraphic(Character01, true, true, 16, 32)
@@ -70,13 +69,19 @@ package
 			
 			var _st:FlxPoint = hex_map.starting_tile.getMidpoint()
 			trace(_st.x, _st.y)
+			FlxG.camera.focusOn(_st)
 			player.x = _st.x - (player.width/2)
 			player.y = _st.y - (player.height/2)
-
+			
 			add(hex_map)
 			add(title)
 			add(player)
-			trace(FlxG.camera)
+			
+			for each (var h:HexTile in hex_map.neighbors(hex_map.starting_tile.grid_x, hex_map.starting_tile.grid_y)) {
+				trace(h)
+				h.toggle()
+			}
+			
 			
 		}
 		
