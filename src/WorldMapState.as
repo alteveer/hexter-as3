@@ -67,9 +67,11 @@ package
 			player.addAnimation("walk_dr", [1,2], 6, false)
 			player.addAnimation("walk_ur", [4,5], 6, false)
 			
+			_selected_tile = _current_tile = hex_map.starting_tile
+			_selected_tile.play("on")
 			var _st:FlxPoint = hex_map.starting_tile.getMidpoint()
 			trace(_st.x, _st.y)
-			FlxG.camera.focusOn(_st)
+			FlxG.camera.follow(player)
 			player.x = _st.x - (player.width/2)
 			player.y = _st.y - (player.height/2)
 			
@@ -77,18 +79,77 @@ package
 			add(title)
 			add(player)
 			
-			for each (var h:HexTile in hex_map.neighbors(hex_map.starting_tile.grid_x, hex_map.starting_tile.grid_y)) {
-				trace(h)
-				h.toggle()
+		}
+		
+		protected var _current_tile_neighbors:Array = []
+		protected var _current_tile:HexTile
+		protected var _selected_tile:HexTile
+		
+		private var __tiles:Array = []
+		override public function update():void {
+			super.update();
+		   	if (FlxG.keys.justReleased("RIGHT")) {
+				__tiles = hex_map.neighbors(_selected_tile).filter(
+					function(n:HexTile, index:int, array:Array):Boolean {
+						return n.grid_x > _selected_tile.grid_x
+						
+					}
+				)
+				
+				if (__tiles.length > 0) {
+					trace(__tiles.join())
+					select(__tiles[0])
+				}
+				//player.facing = FlxObject.RIGHT
+			} else if(FlxG.keys.justReleased("LEFT")) {
+				__tiles = hex_map.neighbors(_selected_tile).filter(
+					function(n:HexTile, index:int, array:Array):Boolean {
+						return n.grid_x < _selected_tile.grid_x
+						
+					}
+				)
+				
+				if (__tiles.length > 0) {
+					trace(__tiles.join())
+					select(__tiles[0])
+				}
+				//player.facing = FlxObject.LEFT
+				
+			} else {
+				//player.play("idle_dr")
 			}
-			
+			if (FlxG.keys.justReleased("UP")) {
+				__tiles = hex_map.neighbors(_selected_tile).filter(
+					function(n:HexTile, index:int, array:Array):Boolean {
+						return n.grid_x == _selected_tile.grid_x && n.grid_y < _selected_tile.grid_y
+						
+					}					
+				)
+				if (__tiles.length > 0) {
+					trace(__tiles.join())
+					select(__tiles[0])
+				}
+
+			} else if (FlxG.keys.justReleased("DOWN")) {
+				__tiles = hex_map.neighbors(_selected_tile).filter(
+					function(n:HexTile, index:int, array:Array):Boolean {
+						return n.grid_x == _selected_tile.grid_x && n.grid_y > _selected_tile.grid_y
+						
+					}
+				)
+				if (__tiles.length > 0) {
+					trace(__tiles.join())
+					select(__tiles[0])
+				}
+			}
+
 			
 		}
 		
-		override public function update():void {
-			super.update();
-		   	
-			
+		protected function select(Tile:HexTile):void {
+			_selected_tile.play("off")
+			_selected_tile = Tile
+			_selected_tile.play("on")
 		}
 		
 	}

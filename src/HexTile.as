@@ -39,6 +39,9 @@ package
 				play("on")
 			}
 		}
+		override public function toString():String {
+			return "HexTile[" + grid_x + ", " + grid_y + "]"
+		}
 		
 	}
 

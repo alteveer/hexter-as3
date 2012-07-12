@@ -50,42 +50,46 @@ package
 			
 		}
 		private var _neighbors:Array;
-		public function neighbors(x:int, y:int):Array {
+		public function neighbors(Tile:HexTile):Array {
 			_neighbors = [];
-			if (tiles[y] == null || tiles[y][x] == null) {
+			var __x:Number = Tile.grid_x
+			var __y:Number = Tile.grid_y
+			
+			if (tiles[__y] == null || tiles[__y][__x] == null) {
 				return null
 			}
-			if (tiles[y + 1]) {
-				_neighbors.push(tiles[y + 1][x])
+			if (tiles[__y + 1]) {
+				_neighbors.push(tiles[__y + 1][__x])
 			
-				if (x % 2 == 1) {
-					if (tiles[y + 1][x + 1]) {
-						_neighbors.push(tiles[y + 1][x + 1])
+				if (__x % 2 == 1) {
+					if (tiles[__y + 1][__x + 1]) {
+						_neighbors.push(tiles[__y + 1][__x + 1])
 					}
-					if (tiles[y + 1][x - 1]) {
-						_neighbors.push(tiles[y + 1][x - 1])
+					if (tiles[__y + 1][__x - 1]) {
+						_neighbors.push(tiles[__y + 1][__x - 1])
 					}
 				}
 			}	
 
-			if(tiles[y - 1]) {
-				_neighbors.push(tiles[y - 1][x])
-				if (x % 2 == 0) {
-					if (tiles[y - 1][x + 1]) {
-						_neighbors.push(tiles[y + 1][x + 1])
+			if(tiles[__y - 1]) {
+				_neighbors.push(tiles[__y - 1][__x])
+				if (__x % 2 == 0) {
+					if (tiles[__y - 1][__x + 1]) {
+						_neighbors.push(tiles[__y - 1][__x + 1])
 					}
-					if (tiles[y - 1][x - 1]) {
-						_neighbors.push(tiles[y + 1][x - 1])
+					if (tiles[__y - 1][__x - 1]) {
+						_neighbors.push(tiles[__y - 1][__x - 1])
 					}
 				}				
 			}
-			if (tiles[y][x + 1]) {
-				_neighbors.push(tiles[y][x + 1])
+			if (tiles[__y][__x + 1]) {
+				_neighbors.push(tiles[__y][__x + 1])
 			}
-			if (tiles[y][x - 1]) {
-				_neighbors.push(tiles[y][x - 1])
+			if (tiles[__y][__x - 1]) {
+				_neighbors.push(tiles[__y][__x - 1])
 			}
 			
+			trace(Tile, " -- ", _neighbors.join())
 			return _neighbors
 		}
 
