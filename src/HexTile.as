@@ -25,19 +25,28 @@ package
 			grid_y = Y
 			loadGraphic(HexTileGraphic, true, false, 64, 64)
 			addAnimation("off", [0])
-			addAnimation("on", [1])
-			play("off")
+			addAnimation("selected", [1])
+			addAnimation("disabled", [2])
+			play("disabled")
 		}
 		override public function getMidpoint(Point:FlxPoint = null):FlxPoint 
 		{
 			return new FlxPoint(x + width/2 , y + height/2 + 4)
 		}
 		public function toggle():void {
-			if (_curAnim.name == "on") {
+			if (_curAnim.name == "selected") {
 				play("off")
 			} else {
-				play("on")
+				play("selected")
 			}
+		}
+		public function toggle_disabled():void {
+			if (_curAnim.name != "disabled") {
+				play("disabled")
+			} else {
+				play("off")
+			}
+			
 		}
 		override public function toString():String {
 			return "HexTile[" + grid_x + ", " + grid_y + "]"

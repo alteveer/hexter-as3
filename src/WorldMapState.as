@@ -3,11 +3,13 @@ package
 	import org.flixel.FlxBasic;
 	import org.flixel.FlxCamera;
 	import org.flixel.FlxObject;
+	import org.flixel.FlxRect;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxState;
 	import org.flixel.FlxText;
 	import org.flixel.FlxG;
 	import org.flixel.FlxPoint;
+	import org.flixel.FlxTilemap;
 	import org.flixel.system.input.Mouse;
 	
 	/**
@@ -34,7 +36,7 @@ package
 	 
 	public class WorldMapState extends FlxState 
 	{
-		protected var hex_map:HexMap
+		protected var map:HexMap
 		protected var title:FlxText
 		
 		[Embed(source="../assets/char01.png")]
@@ -56,9 +58,8 @@ package
 			title.size = 24
 			title.font = "Title"
 			title.scrollFactor = new FlxPoint(0,0)
-			//title.scrollFactor = new FlxPoint()
 
-			hex_map = new HexMap(13, 15)
+			map = new HexMap(13, 15)
 			
 			player = new FlxSprite()
 			player.loadGraphic(Character01, true, true, 16, 32)
@@ -67,15 +68,18 @@ package
 			player.addAnimation("walk_dr", [1,2], 6, false)
 			player.addAnimation("walk_ur", [4,5], 6, false)
 			
-			_selected_tile = _current_tile = hex_map.starting_tile
-			_selected_tile.play("on")
-			var _st:FlxPoint = hex_map.starting_tile.getMidpoint()
+			var _st:FlxPoint = map.selected_tile.getMidpoint()
 			trace(_st.x, _st.y)
-			FlxG.camera.follow(player)
+			//FlxG.camera.setBounds(0, 0, FlxG.width, FlxG.height);
+			FlxG.camera.follow(map.selected_tile, FlxCamera.STYLE_TOPDOWN_TIGHT)
+			FlxG.camera.deadzone = new FlxRect(FlxG.width / 4, FlxG.height / 4, FlxG.width / 2, FlxG.height / 2)
+			//FlxG.camera.s
+			
 			player.x = _st.x - (player.width/2)
 			player.y = _st.y - (player.height/2)
+			_current_tile = map.selected_tile
 			
-			add(hex_map)
+			add(map)
 			add(title)
 			add(player)
 			
@@ -83,75 +87,46 @@ package
 		
 		protected var _current_tile_neighbors:Array = []
 		protected var _current_tile:HexTile
-		protected var _selected_tile:HexTile
 		
 		private var __tiles:Array = []
 		override public function update():void {
 			super.update();
+			FlxG.camera.update()
+			
+			
 		   	if (FlxG.keys.justReleased("RIGHT")) {
-				__tiles = hex_map.neighbors(_selected_tile).filter(
-					function(n:HexTile, index:int, array:Array):Boolean {
-						return n.grid_x > _selected_tile.grid_x
-						
-					}
-				)
-				
-				if (__tiles.length > 0) {
-					trace(__tiles.join())
-					select(__tiles[0])
+				if (map.neighbors()[HexMap.N_UR]) {
+					map.selected_tile = map.neighbors()[HexMap.N_UR]
+				} else if (map.neighbors()[HexMap.N_DR]) {
+					map.selected_tile = map.neighbors()[HexMap.N_DR]
 				}
-				//player.facing = FlxObject.RIGHT
+
 			} else if(FlxG.keys.justReleased("LEFT")) {
-				__tiles = hex_map.neighbors(_selected_tile).filter(
-					function(n:HexTile, index:int, array:Array):Boolean {
-						return n.grid_x < _selected_tile.grid_x
-						
-					}
-				)
-				
-				if (__tiles.length > 0) {
-					trace(__tiles.join())
-					select(__tiles[0])
+				if (map.neighbors()[HexMap.N_UL] && map.selected_tile != map.neighbors()[HexMap.N_UL]) {
+					map.selected_tile = map.neighbors()[HexMap.N_UL]
+				} else if (map.neighbors()[HexMap.N_DL]) {
+					map.selected_tile = map.neighbors()[HexMap.N_DL]
 				}
-				//player.facing = FlxObject.LEFT
-				
+					
 			} else {
 				//player.play("idle_dr")
 			}
 			if (FlxG.keys.justReleased("UP")) {
-				__tiles = hex_map.neighbors(_selected_tile).filter(
-					function(n:HexTile, index:int, array:Array):Boolean {
-						return n.grid_x == _selected_tile.grid_x && n.grid_y < _selected_tile.grid_y
-						
-					}					
-				)
-				if (__tiles.length > 0) {
-					trace(__tiles.join())
-					select(__tiles[0])
+				if (map.neighbors()[HexMap.N_UP]) {
+					map.selected_tile = map.neighbors()[HexMap.N_UP]
 				}
-
 			} else if (FlxG.keys.justReleased("DOWN")) {
-				__tiles = hex_map.neighbors(_selected_tile).filter(
-					function(n:HexTile, index:int, array:Array):Boolean {
-						return n.grid_x == _selected_tile.grid_x && n.grid_y > _selected_tile.grid_y
-						
-					}
-				)
-				if (__tiles.length > 0) {
-					trace(__tiles.join())
-					select(__tiles[0])
+				if (map.neighbors()[HexMap.N_DN]) {
+					map.selected_tile = map.neighbors()[HexMap.N_DN]
 				}
+				
 			}
-
 			
+			FlxG.camera.target = map.selected_tile
+
 		}
 		
-		protected function select(Tile:HexTile):void {
-			_selected_tile.play("off")
-			_selected_tile = Tile
-			_selected_tile.play("on")
-		}
-		
+
 	}
 
 }
